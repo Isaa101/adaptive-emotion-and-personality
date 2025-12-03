@@ -89,16 +89,62 @@ PERSONALITY2 = {
     "neuroticism":     1.0,
 }
 
-def modulate_substances(d, s, n):
+def modulate_substances(dopamine, serotonin, norepinephrine):
     """
     Modulate the values of dopamine, serotonin, and noradrenaline
     based on the robot's PERSONALITY
     """
 
+    """
+    Add your code here #TO DO
+    """
+    # Get personality traits (0 to 1 scale)
+    openness, conscientiousness, extraversion, agreeableness, neuroticism = PERSONALITY
     
-
-
-    return d, s, n
+    # NEUROTICISM: Amplifies negative emotional responses
+    # Higher neuroticism → lower serotonin and dopamine baselines
+    if neuroticism > 0.5:
+        serotonin *= (1 - neuroticism * 0.3)  # Reduce serotonin by up to 30%
+        dopamine *= (1 - neuroticism * 0.2)   # Reduce dopamine by up to 20%
+        norepinephrine *= (1 + neuroticism * 0.4)  # Increase norepinephrine by up to 40%
+    
+    # EXTRAVERSION: Enhances positive emotional responses
+    # Higher extraversion → amplifies dopamine for positive stimuli
+    if extraversion > 0.5:
+        if dopamine > 0.5:  # Positive dopamine situations
+            dopamine *= (1 + extraversion * 0.3)  # Amplify by up to 30%
+        if serotonin > 0.5:  # Positive serotonin situations
+            serotonin *= (1 + extraversion * 0.2)  # Amplify by up to 20%
+    
+    # AGREEABLENESS: Modulates social emotions
+    # Higher agreeableness → enhances serotonin for social harmony
+    if agreeableness > 0.5:
+        serotonin *= (1 + agreeableness * 0.25)  # Increase serotonin by up to 25%
+        # Reduce aggressive responses (anger)
+        if dopamine > 0.6 and norepinephrine > 0.6:
+            norepinephrine *= (1 - agreeableness * 0.3)  # Reduce norepinephrine
+    
+    # OPENNESS: Affects novelty responses
+    # Higher openness → amplifies dopamine for novel stimuli
+    if openness > 0.5:
+        # When experiencing new situations (high norepinephrine from novelty)
+        if norepinephrine > 0.55:
+            dopamine *= (1 + openness * 0.2)  # Enhance dopamine by up to 20%
+    
+    # CONSCIENTIOUSNESS: Stabilizes emotional responses
+    # Higher conscientiousness → reduces extreme emotional swings
+    if conscientiousness > 0.5:
+        # Bring neurotransmitters toward neutral (0.5)
+        dopamine = 0.5 + (dopamine - 0.5) * (1 - conscientiousness * 0.2)
+        serotonin = 0.5 + (serotonin - 0.5) * (1 - conscientiousness * 0.2)
+        norepinephrine = 0.5 + (norepinephrine - 0.5) * (1 - conscientiousness * 0.25)
+    
+    # Ensure values stay within bounds
+    dopamine = max(0.0, min(1.0, dopamine))
+    serotonin = max(0.0, min(1.0, serotonin))
+    norepinephrine = max(0.0, min(1.0, norepinephrine))
+    
+    return dopamine, serotonin, norepinephrine
 
 
 # Draw matplotlib output
@@ -208,7 +254,7 @@ def main():
             # update_circle(colour)
             update_circle(colour, dopamine, serotonin, noradrenaline, stimuli)
             plt.pause(0.1)
-            
+
         except KeyboardInterrupt:
             print("Stopped.")
             break
