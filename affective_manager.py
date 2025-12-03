@@ -14,6 +14,11 @@ import matplotlib.patches as patches
 import matplotlib
 matplotlib.use('TkAgg')  # o 'Qt5Agg
 
+#Imports for new window
+from itertools import combinations, product
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+
 
 
 def lovheim_emotion(s, d, n):
@@ -53,7 +58,9 @@ Red:   (1, 0, 0)
 Green: (0, 1, 0)
 Blue:  (0, 0, 1)
 """
-#TO DO
+"""
+Emotion colours in RGB format - CUTE VERSION
+
 EMOTION_COLOURS = {
     "Joy":      (1.0, 0.95, 0.6),   # Pastel yellow
     "Anger":    (1.0, 0.6, 0.6),    # Soft coral red
@@ -63,16 +70,30 @@ EMOTION_COLOURS = {
     "Disgust":  (0.7, 0.9, 0.7),    # Pastel green
     "Interest": (1.0, 0.8, 0.5),    # Warm peach
     "Distress": (1.0, 0.75, 0.8),   # Soft rose pink
+    "Surprise": (1.0, 1.0, 0.6),    # Light lemon yellow
     "Neutral":  (0.85, 0.85, 0.85)  # Light grey
 
-}
+}"""
 
+"""
+Emotion colours in RGB format - VIVID VERSION
+"""
+EMOTION_COLOURS = {
+    "Joy":      (1.0, 0.84, 0.0),    # Gold/Bright Yellow
+    "Anger":    (1.0, 0.0, 0.0),     # Pure Red
+    "Fear":     (0.58, 0.0, 0.83),   # Purple
+    "Shame":    (0.5, 0.0, 0.5),     # Dark Magenta
+    "Disgust":  (0.0, 1.0, 0.0),     # Lime Green
+    "Interest": (1.0, 0.5, 0.0),     # Bright Orange
+    "Distress": (1.0, 0.08, 0.58),   # Hot Pink
+    "Surprise": (0.0, 1.0, 1.0),     # Cyan/Aqua
+    "Neutral":  (0.5, 0.5, 0.5)      # Gray
+}
 
 """
 Define PERSONALITY modulation
 Big-five PERSONALITY traits from 0 to 1
 """
-#TO DO
 PERSONALITY  = {
     "openness":        0.0,
     "conscientious":   0.0,
@@ -161,32 +182,151 @@ def modulate_substances(dopamine, serotonin, norepinephrine):
     return dopamine, serotonin, norepinephrine
 
 
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.patches as patches
+import numpy as np
+
 # Draw matplotlib output
 plt.ion()
-fig, ax = plt.subplots(figsize=(4, 4))
+fig = plt.figure(figsize=(12, 6))
 
-# Initial circle with black colour
-circle = patches.Circle((0.5, 0.5), 0.4, color=(0, 0, 0))
-ax.add_patch(circle)
-ax.set_xlim(0, 1)
-ax.set_ylim(0, 1)
-ax.axis("off")
+# Left: 3D Lovheim Cube
+ax_cube = fig.add_subplot(121, projection='3d')
+ax_cube.set_xlabel('Serotonin', fontsize=10, weight='bold')
+ax_cube.set_ylabel('Dopamine', fontsize=10, weight='bold')
+ax_cube.set_zlabel('Norepinephrine', fontsize=10, weight='bold')
+ax_cube.set_xlim(0, 1)
+ax_cube.set_ylim(0, 1)
+ax_cube.set_zlim(0, 1)
+ax_cube.set_title("Lövheim Cube", fontsize=12, weight='bold')
+
+# Draw cube wireframe
+r = [0, 1]
+for s, e in combinations(np.array(list(product(r, r, r))), 2):
+    if np.sum(np.abs(s-e)) == r[1]-r[0]:
+        ax_cube.plot3D(*zip(s, e), color="gray", alpha=0.3, linewidth=0.5)
+
+# Emotion labels at vertices (corners of cube)
+emotions_pos = {
+    "Joy":      (1, 1, 0, EMOTION_COLOURS["Joy"]),
+    "Interest": (1, 1, 1, EMOTION_COLOURS["Interest"]),
+    "Surprise": (1, 0, 1, EMOTION_COLOURS["Surprise"]),
+    "Fear":     (0, 1, 0, EMOTION_COLOURS["Fear"]),
+    "Anger":    (0, 1, 1, EMOTION_COLOURS["Anger"]),
+    "Distress": (0, 0, 1, EMOTION_COLOURS["Distress"]),
+    "Disgust":  (1, 0, 0, EMOTION_COLOURS["Disgust"]),
+    "Shame":    (0, 0, 0, EMOTION_COLOURS["Shame"])
+}
+
+for emotion, (s, d, n, color) in emotions_pos.items():
+    ax_cube.scatter(s, d, n, color=color, s=100, alpha=0.6, edgecolors='black', linewidth=1.5)
+    ax_cube.text(s, d, n, f"  {emotion}", fontsize=8, weight='bold')
+
+# Current state point (will be updated)
+current_point = ax_cube.scatter([0.5], [0.5], [0.5], color='red', s=200, 
+                                marker='o', edgecolors='black', linewidth=2, 
+                                label='Current State', zorder=10)
+
+# Trail of previous positions (optional)
+trail_points = ax_cube.plot([0.5], [0.5], [0.5], 'r--', alpha=0.3, linewidth=1)[0]
+trail_history = []
+
+ax_cube.legend(loc='upper right')
+
+# Right: Circle display with personality bar
+ax_circle = fig.add_subplot(122)
+ax_circle.set_xlim(0, 1)
+ax_circle.set_ylim(0, 1)
+ax_circle.axis("off")
+
+# Main emotion circle
+circle = patches.Circle((0.5, 0.65), 0.3, color=(0, 0, 0), linewidth=3, edgecolor='darkgray')
+ax_circle.add_patch(circle)
+
+emotion_text = ax_circle.text(0.5, 0.65, "Neutral", ha="center", va="center", 
+                              fontsize=16, weight='bold', color="white")
+
+# Monoamines (only final/modulated values)
+mono_text = ax_circle.text(0.5, 0.35, "", ha="center", va="top", fontsize=9, 
+                          family='monospace',
+                          bbox=dict(boxstyle='round,pad=0.5', facecolor='lightgray', alpha=0.8))
+
+# Personality trait bars (horizontal mini-bars)
+trait_y_positions = [0.25, 0.20, 0.15, 0.10, 0.05]
+trait_names = ['O', 'C', 'E', 'A', 'N']  # Openness, Conscient., Extraversion, Agreeable., Neurotic.
+trait_colors = ['#9b59b6', '#3498db', '#e74c3c', '#2ecc71', '#f39c12']
+trait_bars = []
+trait_labels = []
+
+for i, (name, color, y_pos) in enumerate(zip(trait_names, trait_colors, trait_y_positions)):
+    # Background bar (gray)
+    bg_bar = patches.Rectangle((0.1, y_pos - 0.01), 0.3, 0.02, 
+                                facecolor='#cccccc', edgecolor='none')
+    ax_circle.add_patch(bg_bar)
+    
+    # Active bar (colored, will be updated based on personality value)
+    active_bar = patches.Rectangle((0.1, y_pos - 0.01), 0.0, 0.02, 
+                                    facecolor=color, edgecolor='none')
+    ax_circle.add_patch(active_bar)
+    trait_bars.append(active_bar)
+    
+    # Label
+    label = ax_circle.text(0.05, y_pos, name, ha='right', va='center', 
+                          fontsize=8, weight='bold', color=color)
+    trait_labels.append(label)
+
+# Personality title
+personality_title = ax_circle.text(0.25, 0.28, "PERSONALITY", ha="center", va="bottom",
+                                   fontsize=8, weight='bold', color='#555')
+
+# Active stimuli
+stimuli_text = ax_circle.text(0.75, 0.25, "", ha="center", va="top", fontsize=7, 
+                              family='monospace')
+
+fig.tight_layout()
 fig.canvas.draw()
 plt.show(block=False)
 
-# Text in window for monoamine levels and active stimuli
-# Text in window for monoamine levels and active stimuli
-raw_text = ax.text(0.5, 0.75, "", ha="center", va="center", fontsize=8, color="black", wrap=True)
-mod_text = ax.text(0.5, 0.5, "", ha="center", va="center", fontsize=8, color="black", wrap=True)
-stimuli_text = ax.text(0.5, 0.1, "", ha="center", va="center", fontsize=7, color="black", wrap=True)
 
-
-def update_circle(colour, raw_d, raw_s, raw_n, mod_d, mod_s, mod_n, stimuli):
+def update_circle(colour, raw_d, raw_s, raw_n, mod_d, mod_s, mod_n, stimuli, emotion):
+    # Update 3D cube position
+    current_point._offsets3d = ([mod_s], [mod_d], [mod_n])
+    current_point.set_color(colour)
+    
+    # Add trail
+    trail_history.append((mod_s, mod_d, mod_n))
+    if len(trail_history) > 10:
+        trail_history.pop(0)
+    if len(trail_history) > 1:
+        trail_s, trail_d, trail_n = zip(*trail_history)
+        trail_points.set_data_3d(trail_s, trail_d, trail_n)
+    
+    # Update circle
     circle.set_color(colour)
-    raw_text.set_text(f"Before Personality:\nDop: {raw_d:.2f} | Ser: {raw_s:.2f} | Ne: {raw_n:.2f}")
-    mod_text.set_text(f"After Personality:\nDop: {mod_d:.2f} | Ser: {mod_s:.2f} | Ne: {mod_n:.2f}")
-    stim_info =    stim_info = "\n".join([f"{s['name']} ({s['intensity']})" for s in stimuli]) if stimuli else "No active stimuli"
-    stimuli_text.set_text(stim_info)
+    emotion_text.set_text(emotion.upper())
+    emotion_text.set_color('white' if sum(colour)/3 < 0.5 else 'black')
+    
+    # Show only final monoamines
+    mono_text.set_text(f"D:{mod_d:.2f} S:{mod_s:.2f} N:{mod_n:.2f}")
+    
+    # Update personality bars
+    personality_values = [
+        PERSONALITY["openness"],
+        PERSONALITY["conscientious"],
+        PERSONALITY["extraversion"],
+        PERSONALITY["agreeableness"],
+        PERSONALITY["neuroticism"]
+    ]
+    
+    for bar, value in zip(trait_bars, personality_values):
+        bar.set_width(0.3 * value)  # Scale to bar width
+    
+    # Update stimuli
+    stim_info = "\n".join([f"• {s['name']}\n  ({s['intensity']:.0f})" 
+                           for s in stimuli[:3]]) if stimuli else "No stimuli"  # Max 3 to save space
+    stimuli_text.set_text(f"STIMULI\n{stim_info}")
+    
     fig.canvas.draw()
     fig.canvas.flush_events()
 
@@ -270,7 +410,7 @@ def main():
 
             # Update circle window
             # update_circle(colour)
-            update_circle(colour, dopamine, serotonin, noradrenaline, mod_dopamine, mod_serotonin, mod_noradrenaline, stimuli)
+            update_circle(colour, dopamine, serotonin, noradrenaline, mod_dopamine, mod_serotonin, mod_noradrenaline, stimuli, emotion)
             plt.pause(0.1)
 
         except KeyboardInterrupt:
