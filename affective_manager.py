@@ -1,3 +1,5 @@
+# Aina Crespi Hromcova
+# Isabel Gregorio Díez
 """
 PROGRAM 2 — affective_processor.py
 This program receives stimuli, computes monoamines, prints colour-coded emotions,
