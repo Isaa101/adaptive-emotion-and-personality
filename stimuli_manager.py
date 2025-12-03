@@ -1,3 +1,5 @@
+# Aina Crespi Hromcova
+# Isabel Gregorio Díez
 """
 PROGRAM 1 — stimulus_sender.py
 This program defines a set of STIMULI with their values and sends them to the affective processor.
