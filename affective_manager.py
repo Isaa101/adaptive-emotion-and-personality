@@ -74,18 +74,18 @@ Big-five PERSONALITY traits from 0 to 1
 """
 #TO DO
 PERSONALITY  = {
-    "openness":        0,
-    "conscientious":   0,
-    "extraversion":    0,
+    "openness":        0.0,
+    "conscientious":   0.0,
+    "extraversion":    0.0,
     "agreeableness":   1.0,
-    "neuroticism":     0,
+    "neuroticism":     0.0,
 }
 
 PERSONALITY2 = {
-    "openness":        0,
-    "conscientious":   0,
-    "extraversion":    0,
-    "agreeableness":   0,
+    "openness":        0.0,
+    "conscientious":   0.0,
+    "extraversion":    0.0,
+    "agreeableness":   0.0,
     "neuroticism":     1.0,
 }
 
@@ -95,11 +95,12 @@ def modulate_substances(dopamine, serotonin, norepinephrine):
     based on the robot's PERSONALITY
     """
 
-    """
-    Add your code here #TO DO
-    """
     # Get personality traits (0 to 1 scale)
-    openness, conscientiousness, extraversion, agreeableness, neuroticism = PERSONALITY
+    openness = PERSONALITY["openness"]
+    conscientiousness = PERSONALITY["conscientious"]
+    extraversion = PERSONALITY["extraversion"]
+    agreeableness = PERSONALITY["agreeableness"]
+    neuroticism = PERSONALITY["neuroticism"]
     
     # NEUROTICISM: Amplifies negative emotional responses
     # Higher neuroticism → lower serotonin and dopamine baselines
@@ -108,6 +109,11 @@ def modulate_substances(dopamine, serotonin, norepinephrine):
         dopamine *= (1 - neuroticism * 0.2)   # Reduce dopamine by up to 20%
         norepinephrine *= (1 + neuroticism * 0.4)  # Increase norepinephrine by up to 40%
     
+    # IMPROVED: Stronger effects for very high neuroticism
+    if neuroticism > 0.7:
+        serotonin *= (1 - neuroticism * 0.4)  # Further reduce serotonin up to 40%
+        norepinephrine *= (1 + neuroticism * 0.5)  # Further increase norepinephrine up to 50%
+    
     # EXTRAVERSION: Enhances positive emotional responses
     # Higher extraversion → amplifies dopamine for positive stimuli
     if extraversion > 0.5:
@@ -115,6 +121,10 @@ def modulate_substances(dopamine, serotonin, norepinephrine):
             dopamine *= (1 + extraversion * 0.3)  # Amplify by up to 30%
         if serotonin > 0.5:  # Positive serotonin situations
             serotonin *= (1 + extraversion * 0.2)  # Amplify by up to 20%
+    
+    # IMPROVED: Extraverts recover faster from negative emotions
+    if extraversion > 0.5 and dopamine < 0.5:
+        dopamine *= (1 + extraversion * 0.15)  # Faster recovery from negative states
     
     # AGREEABLENESS: Modulates social emotions
     # Higher agreeableness → enhances serotonin for social harmony
@@ -130,6 +140,10 @@ def modulate_substances(dopamine, serotonin, norepinephrine):
         # When experiencing new situations (high norepinephrine from novelty)
         if norepinephrine > 0.55:
             dopamine *= (1 + openness * 0.2)  # Enhance dopamine by up to 20%
+    
+    # IMPROVED: Openness enhances curiosity and exploration
+    if openness > 0.5 and norepinephrine > 0.5:
+        dopamine *= (1 + openness * 0.25)  # Increase reward from novel experiences
     
     # CONSCIENTIOUSNESS: Stabilizes emotional responses
     # Higher conscientiousness → reduces extreme emotional swings
@@ -161,13 +175,17 @@ fig.canvas.draw()
 plt.show(block=False)
 
 # Text in window for monoamine levels and active stimuli
-mono_text = ax.text(0.5, 0.5, "", ha="center", va="center", fontsize=10, color="black", wrap=True)
-stimuli_text = ax.text(0.5, 0.1, "", ha="center", va="center", fontsize=8, color="black", wrap=True)
+# Text in window for monoamine levels and active stimuli
+raw_text = ax.text(0.5, 0.75, "", ha="center", va="center", fontsize=8, color="black", wrap=True)
+mod_text = ax.text(0.5, 0.5, "", ha="center", va="center", fontsize=8, color="black", wrap=True)
+stimuli_text = ax.text(0.5, 0.1, "", ha="center", va="center", fontsize=7, color="black", wrap=True)
 
-def update_circle(colour, dopamine, serotonin, noradrenaline, stimuli):
+
+def update_circle(colour, raw_d, raw_s, raw_n, mod_d, mod_s, mod_n, stimuli):
     circle.set_color(colour)
-    mono_text.set_text(f"Dop: {dopamine:.2f}\nSer: {serotonin:.2f}\nNe: {noradrenaline:.2f}")
-    stim_info = "\n".join([f"{s['name']} ({s['intensity']})" for s in stimuli]) if stimuli else "No active stimuli"
+    raw_text.set_text(f"Before Personality:\nDop: {raw_d:.2f} | Ser: {raw_s:.2f} | Ne: {raw_n:.2f}")
+    mod_text.set_text(f"After Personality:\nDop: {mod_d:.2f} | Ser: {mod_s:.2f} | Ne: {mod_n:.2f}")
+    stim_info =    stim_info = "\n".join([f"{s['name']} ({s['intensity']})" for s in stimuli]) if stimuli else "No active stimuli"
     stimuli_text.set_text(stim_info)
     fig.canvas.draw()
     fig.canvas.flush_events()
@@ -239,10 +257,10 @@ def main():
             print(f"Monoamines without modulation: Dop={dopamine:.2f} Se={serotonin:.2f} Ne={noradrenaline:.2f}")
 
             # Modulate values based on PERSONALITY
-            dopamine, serotonin, noradrenaline = modulate_substances(dopamine, serotonin, noradrenaline)
+            mod_dopamine, mod_serotonin, mod_noradrenaline = modulate_substances(dopamine, serotonin, noradrenaline)
 
             # Determine emotion
-            emotion = lovheim_emotion(serotonin, dopamine, noradrenaline)
+            emotion = lovheim_emotion(mod_serotonin, mod_dopamine, mod_noradrenaline)
 
             # Get colour for the emotion
             colour = EMOTION_COLOURS.get(emotion, (1, 1, 1))
@@ -252,7 +270,7 @@ def main():
 
             # Update circle window
             # update_circle(colour)
-            update_circle(colour, dopamine, serotonin, noradrenaline, stimuli)
+            update_circle(colour, dopamine, serotonin, noradrenaline, mod_dopamine, mod_serotonin, mod_noradrenaline, stimuli)
             plt.pause(0.1)
 
         except KeyboardInterrupt:
