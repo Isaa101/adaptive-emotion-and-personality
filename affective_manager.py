@@ -11,6 +11,11 @@ import time
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+import matplotlib
+matplotlib.use('TkAgg')  # o 'Qt5Agg
+
+
+
 def lovheim_emotion(s, d, n):
     """
     Basic implementation of Lovheim cube:
@@ -69,11 +74,19 @@ Big-five PERSONALITY traits from 0 to 1
 """
 #TO DO
 PERSONALITY  = {
-    "openness":        0.5,
-    "conscientious":   0.5,
-    "extraversion":    0.5,
-    "agreeableness":   0.5,
-    "neuroticism":     0.5,
+    "openness":        0,
+    "conscientious":   0,
+    "extraversion":    0,
+    "agreeableness":   1.0,
+    "neuroticism":     0,
+}
+
+PERSONALITY2 = {
+    "openness":        0,
+    "conscientious":   0,
+    "extraversion":    0,
+    "agreeableness":   0,
+    "neuroticism":     1.0,
 }
 
 def modulate_substances(d, s, n):
@@ -82,9 +95,8 @@ def modulate_substances(d, s, n):
     based on the robot's PERSONALITY
     """
 
-    """
-    Add your code here #TO DO
-    """
+    
+
 
     return d, s, n
 
@@ -102,7 +114,19 @@ ax.axis("off")
 fig.canvas.draw()
 plt.show(block=False)
 
+# Text in window for monoamine levels and active stimuli
+mono_text = ax.text(0.5, 0.5, "", ha="center", va="center", fontsize=10, color="black", wrap=True)
+stimuli_text = ax.text(0.5, 0.1, "", ha="center", va="center", fontsize=8, color="black", wrap=True)
 
+def update_circle(colour, dopamine, serotonin, noradrenaline, stimuli):
+    circle.set_color(colour)
+    mono_text.set_text(f"Dop: {dopamine:.2f}\nSer: {serotonin:.2f}\nNe: {noradrenaline:.2f}")
+    stim_info = "\n".join([f"{s['name']} ({s['intensity']})" for s in stimuli]) if stimuli else "No active stimuli"
+    stimuli_text.set_text(stim_info)
+    fig.canvas.draw()
+    fig.canvas.flush_events()
+
+'''Previous version without monoamine and stimuli text
 def update_circle(colour):
     """
     Update circle colour
@@ -112,6 +136,7 @@ def update_circle(colour):
     circle.set_color(colour)
     fig.canvas.draw()
     fig.canvas.flush_events()
+'''
 
 def main():
     """
@@ -180,8 +205,10 @@ def main():
             print(f"\033[38;2;{int(colour[0]*255)};{int(colour[1]*255)};{int(colour[2]*255)}m{emotion}\033[0m", f" | Dop={dopamine:.2f} Se={serotonin:.2f} Ne={noradrenaline:.2f}")
 
             # Update circle window
-            update_circle(colour)
-
+            # update_circle(colour)
+            update_circle(colour, dopamine, serotonin, noradrenaline, stimuli)
+            plt.pause(0.1)
+            
         except KeyboardInterrupt:
             print("Stopped.")
             break
