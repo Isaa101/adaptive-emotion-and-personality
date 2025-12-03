@@ -16,7 +16,7 @@ Define the STIMULI with their names and effects on monoamines
 """
 STIMULI = {
     "touch":  {"d": 1,  "s": 1,  "n": -1}, # Joy
-    "push": {"d": 1,  "s": 1,  "n": -1}, # Anger
+    "push": {"d": 1,  "s": -1,  "n": -1}, # Anger
     "criticism": {"d": -1,  "s": -1,  "n": -1}, # Shame
     "reward": {"d": 1,  "s": 1,  "n": 1}, # Interest
 
