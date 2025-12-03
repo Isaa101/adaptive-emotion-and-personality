@@ -194,7 +194,7 @@ def main():
             socket.send_json(active)
 
             # Sleep for 1 second
-            time.sleep(1)
+            time.sleep(2)
 
     except KeyboardInterrupt:
         pass
