@@ -86,7 +86,7 @@ def modulate_substances(dopamine, serotonin, norepinephrine):
     Add your code here #TO DO
     """
     # Get personality traits (0 to 1 scale)
-    openness, conscientiousness, extraversion, agreeableness, neuroticism = self.personality
+    openness, conscientiousness, extraversion, agreeableness, neuroticism = PERSONALITY
     
     # NEUROTICISM: Amplifies negative emotional responses
     # Higher neuroticism → lower serotonin and dopamine baselines
