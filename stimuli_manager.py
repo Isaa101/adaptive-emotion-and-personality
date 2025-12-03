@@ -10,10 +10,11 @@ import threading
 from queue import Queue
 
 """
-Defien the STIMULI with their names and effects on monoamines
+Define the STIMULI with their names and effects on monoamines
 """
 STIMULI = {
     "touch":  {"d": 1,  "s": 1,  "n": -1}
+    #TO DO
 }
 
 

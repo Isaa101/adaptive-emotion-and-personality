@@ -22,6 +22,20 @@ def lovheim_emotion(s, d, n):
     # Compute emotion based on values and thresholds
     if d > high and s > high and n < low:
         return "Joy"
+    if d > high and s < low and n > high:
+        return "Anger"
+    if d < low and s < low and n > high:
+        return "Distress"
+    if d < low and s > high and n > high: #No definida en colores
+        return "Surprise"
+    if d < low and s < low and n < low:
+        return "Shame"
+    if d > high and s < low and n < low:
+        return "Fear"
+    if d < low and s > high and n < low:
+        return "Disgust"
+    if d > high and s > high and n > high:
+        return "Interest"
         
     return "Neutral"  # fallback
 
@@ -32,16 +46,18 @@ Red:   (1, 0, 0)
 Green: (0, 1, 0)
 Blue:  (0, 0, 1)
 """
+#TO DO
 EMOTION_COLOURS = {
-    "Joy":     (0.8, 0.8, 0.8),
-    "Anger":   (0.8, 0.8, 0.8),
-    "Fear":    (0.8, 0.8, 0.8),
-    "Sadness": (0.8, 0.8, 0.8),
-    "Shame":   (0.8, 0.8, 0.8),
-    "Disgust": (0.8, 0.8, 0.8),
-    "Interest":(0.8, 0.8, 0.8),
-    "Distress":(0.8, 0.8, 0.8),
-    "Neutral": (0.8, 0.8, 0.8)
+    "Joy":      (1.0, 0.95, 0.6),   # Pastel yellow
+    "Anger":    (1.0, 0.6, 0.6),    # Soft coral red
+    "Fear":     (0.8, 0.8, 1.0),    # Light lavender blue
+    "Sadness":  (0.6, 0.8, 1.0),    # Gentle sky blue      !Not in lovheim_emotion
+    "Shame":    (0.9, 0.7, 0.9),    # Muted pink-purple
+    "Disgust":  (0.7, 0.9, 0.7),    # Pastel green
+    "Interest": (1.0, 0.8, 0.5),    # Warm peach
+    "Distress": (1.0, 0.75, 0.8),   # Soft rose pink
+    "Neutral":  (0.85, 0.85, 0.85)  # Light grey
+
 }
 
 
@@ -49,6 +65,7 @@ EMOTION_COLOURS = {
 Define PERSONALITY modulation
 Big-five PERSONALITY traits from 0 to 1
 """
+#TO DO
 PERSONALITY  = {
     "openness":        0.5,
     "conscientious":   0.5,
@@ -64,7 +81,7 @@ def modulate_substances(d, s, n):
     """
 
     """
-    Add your code here
+    Add your code here #TO DO
     """
 
     return d, s, n
@@ -122,7 +139,7 @@ def main():
             # Apply effects from all active stimuli
             for s in stimuli:
                 # Scale intensity to a value between 0 and 0.5
-                scale = s["intensity"] / 200.0
+                scale = s["intensity"] / 200.0 #WHY 200? #TO DO
                 dopamine = 0.5 + s["d"] * scale
                 serotonin = 0.5 +  s["s"] * scale
                 noradrenaline = 0.5 + s["n"] * scale
