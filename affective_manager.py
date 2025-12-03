@@ -51,7 +51,7 @@ EMOTION_COLOURS = {
     "Joy":      (1.0, 0.95, 0.6),   # Pastel yellow
     "Anger":    (1.0, 0.6, 0.6),    # Soft coral red
     "Fear":     (0.8, 0.8, 1.0),    # Light lavender blue
-    "Sadness":  (0.6, 0.8, 1.0),    # Gentle sky blue      !Not in lovheim_emotion
+    #"Sadness":  (0.6, 0.8, 1.0),    # Gentle sky blue      !Not in lovheim_emotion
     "Shame":    (0.9, 0.7, 0.9),    # Muted pink-purple
     "Disgust":  (0.7, 0.9, 0.7),    # Pastel green
     "Interest": (1.0, 0.8, 0.5),    # Warm peach
@@ -135,14 +135,27 @@ def main():
         try:
             # Receive stimuli from the stimulus manager
             stimuli = socket.recv_json()  # list of stimuli dicts
-
-            # Apply effects from all active stimuli
+            
+            # Average of stimuli monoamines
+            av_dopamine = 0.0
+            av_serotonin = 0.0
+            av_noradrenaline = 0.0   
+            stimuli_counter = 0     
             for s in stimuli:
-                # Scale intensity to a value between 0 and 0.5
                 scale = s["intensity"] / 200.0 #WHY 200? #TO DO
-                dopamine = 0.5 + s["d"] * scale
-                serotonin = 0.5 +  s["s"] * scale
-                noradrenaline = 0.5 + s["n"] * scale
+                stimuli_counter += 1
+                av_dopamine += s["d"] * scale
+                av_noradrenaline += s["n"] * scale
+                av_serotonin += s["s"] * scale
+            if stimuli_counter != 0:
+                av_serotonin = av_serotonin/stimuli_counter
+                av_dopamine = av_dopamine/stimuli_counter
+                av_noradrenaline = av_noradrenaline/stimuli_counter
+
+            # Scale intensity to a value between 0 and 0.5
+            dopamine = 0.5 + av_dopamine
+            serotonin = 0.5 +  av_serotonin
+            noradrenaline = 0.5 + av_noradrenaline
 
             # Clamp values between 0 and 1
             dopamine = max(0, min(1, dopamine))
