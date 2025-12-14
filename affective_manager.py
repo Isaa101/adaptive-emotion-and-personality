@@ -33,7 +33,7 @@ def lovheim_emotion(s, d, n):
         return "Anger"
     if d < low and s < low and n > high:
         return "Distress"
-    if d < low and s > high and n > high: #No definida en colores
+    if d < low and s > high and n > high: 
         return "Surprise"
     if d < low and s < low and n < low:
         return "Shame"
@@ -58,13 +58,12 @@ EMOTION_COLOURS = {
     "Joy":      (1.0, 0.95, 0.6),   # Pastel yellow
     "Anger":    (1.0, 0.6, 0.6),    # Soft coral red
     "Fear":     (0.8, 0.8, 1.0),    # Light lavender blue
-    #"Sadness":  (0.6, 0.8, 1.0),    # Gentle sky blue      !Not in lovheim_emotion
     "Shame":    (0.9, 0.7, 0.9),    # Muted pink-purple
     "Disgust":  (0.7, 0.9, 0.7),    # Pastel green
     "Interest": (1.0, 0.8, 0.5),    # Warm peach
     "Distress": (1.0, 0.75, 0.8),   # Soft rose pink
-    "Neutral":  (0.85, 0.85, 0.85)  # Light grey
-
+    "Surprise":  (1.0, 0.9, 0.6),  # Light orange
+    "Neutral":  (0.85, 0.85, 0.85),  # Light grey
 }
 
 

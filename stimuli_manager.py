@@ -15,6 +15,7 @@ from queue import Queue
 Define the STIMULI with their names and effects on monoamines
 """
 STIMULI = {
+    # Radical stimuli
     "touch":  {"d": 1,  "s": 1,  "n": -1}, # Joy
     "push": {"d": 1,  "s": -1,  "n": 1}, # Anger
     "criticism": {"d": -1,  "s": -1,  "n": -1}, # Shame
@@ -24,6 +25,16 @@ STIMULI = {
     "broccoli": {"d": -1,  "s": 1,  "n": -1}, # Disgust
     "exam": {"d": -1,  "s": -1,  "n": 1}, # Distress
     "gift": {"d": 1,  "s": 1,  "n": -1} # Surprise
+
+
+    # Mild stimuli
+    "social_rejection": {"d": -0.6,"s": -0.7,"n": 0.5},   # social distress
+    "bitter_taste":   {"d": -0.7,"s": 0.5, "n": -0.6},  # gustatory disgust
+    "perfume": {"d": 0.7, "s": 0.6, "n": -0.3}, 
+    "unexpected_reward":        {"d": 0.95,"s":  0.6, "n": 0.5},  
+    "gentle_touch":   {"d":  0.9, "s":  0.7, "n": -0.5},  
+    "positive_feedback": {"d":  0.8, "s":  0.7, "n":  0.1},  
+    "loud_noise": {"d":  0.6, "s": -0.8, "n": -0.4},  # startle, high alert
 
 }
 
