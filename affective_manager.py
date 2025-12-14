@@ -223,29 +223,23 @@ def main():
     # Loop forever
     while True:
         try:
+            # monoamines reset to baseline each iteration
+            serotonin = 0.5
+            dopamine = 0.5
+            noradrenaline = 0.5 
+
             # Receive stimuli from the stimulus manager
             stimuli = socket.recv_json()  # list of stimuli dicts
             
-            # Average of stimuli monoamines
-            av_dopamine = 0.0
-            av_serotonin = 0.0
-            av_noradrenaline = 0.0   
+            # Update monoamine levels based on stimuli 
             stimuli_counter = 0     
             for s in stimuli:
-                scale = s["intensity"] / 200.0 #WHY 200? #TO DO
+                scale = s["intensity"] / 200.0 # un estímulo a máxima intensidad desplaza como mucho 0.5 la monoamina correspondiente
                 stimuli_counter += 1
-                av_dopamine += s["d"] * scale
-                av_noradrenaline += s["n"] * scale
-                av_serotonin += s["s"] * scale
-            if stimuli_counter != 0:
-                av_serotonin = av_serotonin/stimuli_counter
-                av_dopamine = av_dopamine/stimuli_counter
-                av_noradrenaline = av_noradrenaline/stimuli_counter
-
-            # Scale intensity to a value between 0 and 0.5
-            dopamine = 0.5 + av_dopamine
-            serotonin = 0.5 +  av_serotonin
-            noradrenaline = 0.5 + av_noradrenaline
+                dopamine += s["d"] * scale
+                noradrenaline += s["n"] * scale
+                serotonin += s["s"] * scale
+            
 
             # Clamp values between 0 and 1
             dopamine = max(0, min(1, dopamine))
