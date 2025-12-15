@@ -16,15 +16,15 @@ Define the STIMULI with their names and effects on monoamines
 """
 STIMULI = {
     # Radical stimuli
-    "touch":  {"d": 1,  "s": 1,  "n": -1}, # Joy
-    "push": {"d": 1,  "s": -1,  "n": 1}, # Anger
+    "touch":  {"d": 1,  "s": 1,  "n": -1},      # Joy
+    "push": {"d": 1,  "s": -1,  "n": 1},        # Anger
     "criticism": {"d": -1,  "s": -1,  "n": -1}, # Shame
-    "reward": {"d": 1,  "s": 1,  "n": 1}, # Interest
+    "reward": {"d": 1,  "s": 1,  "n": 1},       # Interest
 
-    "threat": {"d": 1,  "s": -1, "n": -1}, # Fear
-    "broccoli": {"d": -1,  "s": 1,  "n": -1}, # Disgust
-    "exam": {"d": -1,  "s": -1,  "n": 1}, # Distress
-    "gift": {"d": 1,  "s": 1,  "n": -1} # Surprise
+    "threat": {"d": 1,  "s": -1, "n": -1},      # Fear
+    "broccoli": {"d": -1,  "s": 1,  "n": -1},   # Disgust
+    "exam": {"d": -1,  "s": -1,  "n": 1},       # Distress
+    "gift": {"d": 1,  "s": 1,  "n": -1},        # Surprise
 
 
     # Mild stimuli
