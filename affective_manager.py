@@ -73,7 +73,7 @@ Big-five PERSONALITY traits from 0 to 1
 """
 #TO DO
 PERSONALITY  = {
-    "openness":        0.0,
+    "openness":        1.0,
     "conscientious":   0.0,
     "extraversion":    0.0,
     "agreeableness":   1.0,
@@ -88,18 +88,18 @@ PERSONALITY2 = {
     "neuroticism":     1.0,
 }
 
-def modulate_substances(d, s, n):
+def modulate_substances(d, s, n, personality=PERSONALITY):
     """
     Modulate the values of dopamine, serotonin, and noradrenaline
     based on the robot's PERSONALITY
     """
 
     # Get personality traits (0 to 1 scale)
-    openness = PERSONALITY["openness"]
-    conscientiousness = PERSONALITY["conscientious"]
-    extraversion = PERSONALITY["extraversion"]
-    agreeableness = PERSONALITY["agreeableness"]
-    neuroticism = PERSONALITY["neuroticism"]
+    openness = personality["openness"]
+    conscientiousness = personality["conscientious"]
+    extraversion = personality ["extraversion"]
+    agreeableness = personality["agreeableness"]
+    neuroticism = personality["neuroticism"]
 
      # NEUROTICISM: amplifies negative emotional reactivity
     if neuroticism > 0.5:
@@ -234,7 +234,7 @@ def main():
             print(f"Monoamines without modulation: Dop={dopamine:.2f} Se={serotonin:.2f} Ne={noradrenaline:.2f}")
 
             # Modulate values based on PERSONALITY
-            mod_dopamine, mod_serotonin, mod_noradrenaline = modulate_substances(dopamine, serotonin, noradrenaline)
+            mod_dopamine, mod_serotonin, mod_noradrenaline = modulate_substances(dopamine, serotonin, noradrenaline, PERSONALITY2)
 
             # Determine emotion
             emotion = lovheim_emotion(mod_serotonin, mod_dopamine, mod_noradrenaline)

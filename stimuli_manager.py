@@ -29,12 +29,12 @@ STIMULI = {
 
     # Mild stimuli
     "social_rejection": {"d": -0.6,"s": -0.7,"n": 0.5},   # social distress
-    "bitter_taste":   {"d": -0.7,"s": 0.5, "n": -0.6},  # gustatory disgust
-    "perfume": {"d": 0.7, "s": 0.6, "n": -0.3}, 
-    "unexpected_reward":        {"d": 0.95,"s":  0.6, "n": 0.5},  
-    "gentle_touch":   {"d":  0.9, "s":  0.7, "n": -0.5},  
-    "positive_feedback": {"d":  0.8, "s":  0.7, "n":  0.1},  
-    "loud_noise": {"d":  0.6, "s": -0.8, "n": -0.4},  # startle, high alert
+    "bitter_taste":     {"d": -0.7,"s": 0.5, "n": -0.6},  # gustatory disgust
+    "perfume":          {"d": 0.7, "s": 0.6, "n": -0.3}, 
+    "unexpected_reward":{"d": 0.95,"s":  0.6, "n": 0.5},  
+    "gentle_touch":     {"d":  0.9, "s":  0.7, "n": -0.5},  
+    "positive_feedback":{"d":  0.8, "s":  0.7, "n":  0.1},  
+    "loud_noise":       {"d":  0.6, "s": -0.8, "n": -0.4},  # startle, high alert
 
 }
 
