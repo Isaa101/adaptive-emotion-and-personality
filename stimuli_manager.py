@@ -24,7 +24,7 @@ STIMULI = {
     "threat": {"d": 1,  "s": -1, "n": -1},      # Fear
     "broccoli": {"d": -1,  "s": 1,  "n": -1},   # Disgust
     "exam": {"d": -1,  "s": -1,  "n": 1},       # Distress
-    "gift": {"d": 1,  "s": 1,  "n": -1},        # Surprise
+    "gift": {"d": -1,  "s": 1,  "n": 1},        # Surprise
 
 
     # Mild stimuli
